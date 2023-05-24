@@ -1,24 +1,36 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components/native';
-import { Card, Text } from 'react-native-paper';
-import { Video } from 'expo-av';
-import { View } from 'react-native';
+
+import { FlatList, View, ScrollView, RefreshControl } from 'react-native';
+
+import { ExerciseInfo } from './exercise-info.component';
+import { SafeArea } from '../utility/safe-area.component';
+
+import { FadeInView } from '../animations/fade.animation';
+import { CategoriesContext } from './categories.context';
+import { Button, Card, Text } from 'react-native-paper';
+import { addCollectionAndDocuments, addNewDocument, removeData } from '../../utils/firebase.utils';
+import SHOP_DATA from '../../../video_data';
+
 import YoutubePlayer from "react-native-youtube-iframe";
-import { db, getCategoriesAndDocuments } from '../../utils/firebase.utils';
 
-import { getFirestore, doc, getDoc, setDoc, collection, writeBatch, query, getDocs, onSnapshot } from 'firebase/firestore';
+import { FlashList } from '@shopify/flash-list';
+import { updateVideoDoc } from '../../utils/firebase.utils';
 
-
-const ExerciseCardCover = styled(Card.Cover)`
-  padding: 20px;
-  background-color: white;
+const MainScrollView = styled.ScrollView`
+  padding: 9px;
 `;
 
+const YtPlayer = styled(YoutubePlayer)`
+
+
+`;
 const ExerciseCard = styled(Card)`
   background-color: white;
   margin-bottom: 16px;
-`;
+  padding: 11px;
 
+`;
 const Title = styled.Text`
   padding: 16px;
   font-family: Raleway_700Bold_Italic;
@@ -34,36 +46,70 @@ const Info = styled.View`
   padding: 8px;
 `;
 
+const EditButton = styled(Button)`
+  width: 10px;
+`;
+// const FlashyList = styled(FlashList)`
+// padding: 16;
+// `;
 
 export const IdkYet = () => {
+  const { categoriesMap } = useContext(CategoriesContext);
+
   const [playing, setPlaying] = useState(false);
-  const [allDocs, setAllDocs] = useState([]);
- 
-    const fetchPost = async () => {
-      const collectionRef = doc(db, 'categories', 'videos');
-      onSnapshot(collectionRef, (doc) => {
-        setAllDocs(doc.data().items);
-      })
-    }
-   
-    useEffect(()=>{
-        fetchPost();
-    }, [])
+  const [refresh, setRefresh] = useState(false);
+
+  // useEffect(() => {
+  //   addCollectionAndDocuments('categories', SHOP_DATA)
+  // }, [])
+  // Object.keys(categoriesMap).map(exercise => {
+  //   console.log(exercise);
+  // es logavs arrays cifrebs wtf
+  // })
   
 
+  // const handleKeys = (id, data) => {
+  //   console.log(id);
+
+  //   data.filter(item => {
+  //     item.id !== id;
+  //   })
+  // }
+
+  const pull = () => {
+    setRefresh(true);
+    
+    setTimeout(() => {
+      setRefresh(false);
+    }, 1500)
+  }
+
+
   return (
-    <>
-    <ExerciseCard elevation={2}>
-    {
-      allDocs.map(doc => {
-      <Info key={doc.id}>
-        <Text>{doc.imageUrl}</Text>
-        <Text>{doc.name}</Text>
-        <Text>{doc.comments}</Text>
-      </Info>
-      })
-    }
-    </ExerciseCard>
-    </>
-  );
-};
+    <SafeArea>
+      <Text>aaa</Text>
+      {
+        categoriesMap.videos?.map(exercise => {
+          return (
+            <View style={{
+              height: 200,
+              width: 200,
+            }}>
+              <FlashList
+                data={exercise}
+                renderItem={({ item }) => {
+                  console.log(item);
+                  return <Title>aa</Title>;
+                }}
+                estimatedItemSize={50}
+                
+              />
+            </View>
+            
+          )
+        })
+      }
+    </SafeArea>
+  )
+}
+

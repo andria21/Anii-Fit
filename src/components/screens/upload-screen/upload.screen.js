@@ -1,15 +1,15 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import styled from 'styled-components/native';
 import { Form, FormItem } from 'react-native-form-component';
 import { SafeArea } from '../../utility/safe-area.component';
 
-//import storage from '@react-native-firebase/storage';
-// import firebase from 'firebase';
+
 import * as ImagePicker from 'expo-image-picker';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
 import { uploadData } from '../../../utils/firebase.utils';
+import { CategoriesContext } from '../../exercises/categories.context';
 
 
 export const AccountContainer = styled.View`
@@ -22,7 +22,6 @@ export const AuthInput = styled(TextInput)`
 `;
 export const TextArea = styled(TextInput)`
   height:150px;
-  text-align-vertical: 'top';
 `;
 
 export const Title = styled.Text`
@@ -30,6 +29,8 @@ export const Title = styled.Text`
 `;
 
  export const UploadScreen = () => {
+
+  const { loading, setLoading } = useContext(CategoriesContext);
 
   const [text, SetText] = useState("");
   const [textArea, setTextArea] = useState("");
@@ -51,6 +52,12 @@ export const Title = styled.Text`
       SetText("");
       setTextArea("");
       setVideoUrl("");
+
+      setLoading(false)
+      setTimeout(() => {
+        setLoading(true);
+      }, 500)
+
     } else {
       alert("Please fill out all inputs!")
     }

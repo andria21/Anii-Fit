@@ -37,7 +37,8 @@ export const AppNavigator = () => {
         <Tab.Screen name="Exercises" component={ExercisesScreen} options={{tabBarActiveTintColor: "#696AC3"}} />
         <Tab.Screen name="Upload" component={UploadScreen} options={{tabBarActiveTintColor: "#696AC3"}} />
         <Tab.Screen name="Settings" component={SettingsNavigator} options={{tabBarActiveTintColor: "#696AC3"}} />
-        <Tab.Screen name="IdkYet" component={IdkYet} options={{tabBarActiveTintColor: "#696AC3"}} />
       </Tab.Navigator>
   );
 };
+
+// <Tab.Screen name="IdkYet" component={IdkYet} options={{tabBarActiveTintColor: "#696AC3"}} />

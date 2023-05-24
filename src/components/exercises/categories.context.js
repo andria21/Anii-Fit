@@ -3,10 +3,13 @@ import { getCategoriesAndDocuments } from '../../utils/firebase.utils';
 
 export const CategoriesContext = createContext({
   categoriesMap: {},
+  loading: true,
+  setLoading: () => null
 });
 
 export const CategoriesProvider = ({ children }) => {
   const [categoriesMap, setCategoriesMap] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getCategoriesMap = async () => {
@@ -14,9 +17,9 @@ export const CategoriesProvider = ({ children }) => {
       setCategoriesMap(categoryMap);
     }
     getCategoriesMap();
-  }, []);
+  }, [loading]);
 
-  const value = { categoriesMap };
+  const value = { categoriesMap, loading, setLoading};
   return (
     <CategoriesContext.Provider value={value}>
       {children}

@@ -9,6 +9,10 @@ import { AuthenticationContextProvider } from './src/services/authentication/aut
 import { CategoriesProvider } from './src/components/exercises/categories.context';
 import { CatProvider } from './src/context/card.context';
 
+import { ShareContextProvider } from './src/services/share/share.context';
+
+import { UsersProvider } from './src/context/user.context';
+
 import {
   useFonts,
   Raleway_100Thin,
@@ -65,13 +69,16 @@ export default function App() {
   LogBox.ignoreLogs(['AsyncStorage has been extracted from react-native core and will be removed in a future release.']);
   return (
     <>
-      <CatProvider>
-        <AuthenticationContextProvider>
-          <CategoriesProvider>
-            <Navigation />
-          </CategoriesProvider>
-        </AuthenticationContextProvider>
-      </CatProvider>
+      <UsersProvider>
+        <ShareContextProvider>
+          <AuthenticationContextProvider>
+            <CategoriesProvider>
+              <Navigation />
+            </CategoriesProvider>
+          </AuthenticationContextProvider>
+        </ShareContextProvider>
+      </UsersProvider>
+      
       <ExpoStatusBar style="auto" />
     </>
   );

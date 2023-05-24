@@ -27,7 +27,7 @@ const SettingsBackground = styled.ImageBackground.attrs({
 
 const SettingsItem = styled(List.Item)`
   padding: 16px;
-  background-color: rgba(255,255,255,0.5) */
+  background-color: rgba(255,255,255,0.5)
 `;
 
 const AvatarContainer = styled.View`
@@ -35,9 +35,10 @@ const AvatarContainer = styled.View`
 `;
 
 export const SettingsScreen = ({ navigation }) => {
+
   const { onLogout, user } = useContext(AuthenticationContext);
   const [photo, setPhoto] = useState(null);
-
+  
   const getProfilePicture = async (currentUser) => {
     const photoUri = await AsyncStorage.getItem(`${currentUser.uid}-photo`);
     setPhoto(photoUri);

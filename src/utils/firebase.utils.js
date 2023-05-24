@@ -74,11 +74,13 @@ export const createUserDocumentFromAuth = async (userAuth) => {
   if (!userSnapshot.exists()) {
     const { email } = userAuth;
     const createdAt = new Date();
+    const sharedItems = [];
 
     try {
         await setDoc(userDocRef, {
         email,
         createdAt,
+        sharedItems,
       });
     } catch (error) {
       console.log('error creating the user', error.message);
@@ -127,4 +129,18 @@ export const removeData = async (data) => {
     items: arrayRemove(data)
     
 });
+}
+
+export const fetchUsers = async () => {
+  const collectionRef = collection(db, "users");
+  const q = query(collectionRef);
+
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
+    data.id = doc.id;
+    
+    return data;
+  });
 }
