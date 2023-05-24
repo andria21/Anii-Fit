@@ -82,7 +82,8 @@ const ShareButton = styled(Button)`
 export const ExercisesScreen = () => {
   const { categoriesMap, loading, setLoading } = useContext(CategoriesContext);
   const { share, addToShare, removeFromShare } = useContext(ShareContext);
-  const { users, setUsers } = useContext(UsersContext);
+  // const { users, setUsers } = useContext(UsersContext);
+  const [users, setUsers] = useState([]);
 
   const [playing, setPlaying] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -90,8 +91,6 @@ export const ExercisesScreen = () => {
   const [visible, setVisible] = useState(false);
 
   const toggleModal = () => setVisible(!visible);
-
-  const [fetchData, setFetchData] = useState({});
 
    useEffect(() => {
     const getPosts = [];
@@ -159,8 +158,9 @@ export const ExercisesScreen = () => {
           {users.map(item => (
             <ShareButton 
             labelStyle={{ color: "cyan", fontSize: 14, }} 
-            key={item.id}
+            key={item.key}
             onPress={async () => {
+              if ( share.length === 0) return alert("Choose items to share first!");
               item.sharedItems.push(share)
               uploadArrayToUsers(item.key, share)
               alert("Exercises have been shared successfully with - " + item.email);
