@@ -21,7 +21,10 @@ import { ShareContext } from '../../../services/share/share.context';
 import { Favourite } from '../../favourites/favourite.component';
 import { AntDesign } from '@expo/vector-icons';
 import { collection, getDocs, query } from 'firebase/firestore';
+import { UsersContext } from '../../../context/user.context';
+import { log } from 'react-native-reanimated';
 
+import { uploadArrayToUsers } from '../../../utils/firebase.utils';
 
 
 const MainScrollView = styled.ScrollView`
@@ -79,8 +82,8 @@ const ShareButton = styled(Button)`
 export const ExercisesScreen = () => {
   const { categoriesMap, loading, setLoading } = useContext(CategoriesContext);
   const { share, addToShare, removeFromShare } = useContext(ShareContext);
+  const { users, setUsers } = useContext(UsersContext);
 
-  console.log(share);
   const [playing, setPlaying] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
@@ -91,40 +94,33 @@ export const ExercisesScreen = () => {
   const [fetchData, setFetchData] = useState({});
 
    useEffect(() => {
+    const getPosts = [];
     const fetchUsers = async () => {
       const collectionRef = collection(db, "users");
       const q = query(collectionRef);
     
       const querySnapshot = await getDocs(q);
-    
       querySnapshot.forEach(doc => {
         const data = doc.data();
-        data.id = doc.id;
-        setFetchData(data);
-        return data;
+
+        getPosts.push({
+          ...data,
+          key: doc.id
+        })
+        setUsers(getPosts);
+        // const data = doc.data();
+        // data.id = doc.id;
+        // setFetchData(data);;
       });
     }
-    fetchUsers();
+   fetchUsers()
+   
    }, [])
 
    // OKAY WE NOW NEED TO COMPARE THIS FETCHDATA.ID TO USER ID AND SEE IF HES LOGGED IN THEN FETCH HIS SHIT..........................................
+   // on pull refresh icons are red....
+   // flashlist needed...
 
-  // useEffect(() => {
-  //   addCollectionAndDocuments('categories', SHOP_DATA)
-  // }, [])
-  // Object.keys(categoriesMap).map(exercise => {
-  //   console.log(exercise);
-  // es logavs arrays cifrebs wtf
-  // })
-  
-
-  // const handleKeys = (id, data) => {
-  //   console.log(id);
-
-  //   data.filter(item => {
-  //     item.id !== id;
-  //   })
-  // }
   useEffect(() => {
     setLoading(true);
     console.log("Refresh ->");
@@ -159,9 +155,20 @@ export const ExercisesScreen = () => {
       >
         <SafeArea>
           <Button onPress={toggleModal}>HIDEEEE</Button>
-          
-          {
-          }
+            
+          {users.map(item => (
+            <ShareButton 
+            labelStyle={{ color: "cyan", fontSize: 14, }} 
+            key={item.id}
+            onPress={async () => {
+              item.sharedItems.push(share)
+              uploadArrayToUsers(item.key, share)
+              alert("Exercises have been shared successfully with - " + item.email);
+            }}
+            >
+              {item.email}
+            </ShareButton>
+          ))}
         </SafeArea>
       </Modal>
       {categoriesMap.videos?.map(exercise => {

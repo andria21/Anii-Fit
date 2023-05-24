@@ -131,6 +131,14 @@ export const removeData = async (data) => {
 });
 }
 
+export const uploadArrayToUsers = async (uid,data) => {
+  const collectionRef = doc(db, "users", uid);
+
+  await updateDoc(collectionRef, {
+    sharedItems: data
+});
+}
+
 export const fetchUsers = async () => {
   const collectionRef = collection(db, "users");
   const q = query(collectionRef);
