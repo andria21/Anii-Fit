@@ -3,26 +3,19 @@ import styled from 'styled-components/native';
 
 import { FlatList, View, ScrollView, RefreshControl, TouchableOpacity, Alert, Modal, } from 'react-native';
 
-import { ExerciseInfo } from '../../exercises/exercise-info.component';
 import { SafeArea } from '../../utility/safe-area.component';
 
 import { FadeInView } from '../../animations/fade.animation';
 import { CategoriesContext } from '../../exercises/categories.context';
 import { Button, Card, Text } from 'react-native-paper';
 import { addCollectionAndDocuments, addNewDocument, db, fetchUsers, removeData } from '../../../utils/firebase.utils';
-import SHOP_DATA from '../../../../video_data'
-import VIDEO_DATA from '../../../../new-video-data'
+
 import YoutubePlayer from "react-native-youtube-iframe";
 
 import { FlashList } from '@shopify/flash-list';
-import { updateVideoDoc } from '../../../utils/firebase.utils';
-import { CatContext } from '../../../context/card.context';
 import { ShareContext } from '../../../services/share/share.context';
-import { Favourite } from '../../favourites/favourite.component';
 import { AntDesign } from '@expo/vector-icons';
 import { collection, getDocs, query } from 'firebase/firestore';
-import { UsersContext } from '../../../context/user.context';
-import { log } from 'react-native-reanimated';
 
 import { uploadArrayToUsers } from '../../../utils/firebase.utils';
 
@@ -99,24 +92,28 @@ export const ExercisesScreen = () => {
       const q = query(collectionRef);
     
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-
-        getPosts.push({
-          ...data,
-          key: doc.id
-        })
-        setUsers(getPosts);
-        // const data = doc.data();
-        // data.id = doc.id;
-        // setFetchData(data);;
-      });
+      try {
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+  
+          getPosts.push({
+            ...data,
+            key: doc.id
+          })
+          setUsers(getPosts);
+          // const data = doc.data();
+          // data.id = doc.id;
+          // setFetchData(data);;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      
     }
    fetchUsers()
    
    }, [])
 
-   // OKAY WE NOW NEED TO COMPARE THIS FETCHDATA.ID TO USER ID AND SEE IF HES LOGGED IN THEN FETCH HIS SHIT..........................................
    // on pull refresh icons are red....
    // flashlist needed...
 
@@ -153,9 +150,9 @@ export const ExercisesScreen = () => {
       onRequestClose={toggleModal}
       >
         <SafeArea>
-          <Button onPress={toggleModal}>HIDEEEE</Button>
+          <Button labelStyle={{ color: "red", fontSize: 16, }} onPress={toggleModal}>HIDEEEE</Button>
             
-          {users.map(item => (
+          {users?.map(item => (
             <ShareButton 
             labelStyle={{ color: "cyan", fontSize: 14, }} 
             key={item.key}
