@@ -114,6 +114,8 @@ export const ExercisesScreen = () => {
    
    }, [])
 
+   // NEED TO ADD FEATURE THAT SHOWS MESSAGE " NO DATA FOUND FOR USER"
+
    // on pull refresh icons are red....
    // flashlist needed...
 
